@@ -16,12 +16,15 @@ namespace Templates
 
         public void RegisterRazorEngineViews(Assembly assembly, string namespacePrefix)
         {
+            // scanning the assembly for all public types derived from ITemplate and adding them into cache 
             var templateType = typeof(ITemplate);
             var views = assembly.GetExportedTypes().Where(x => templateType.IsAssignableFrom(x));
 
             namespacePrefix += ".";
             foreach (var view in views)
             {
+                // full name of a class like Namespace.Prefix.Foo.Bar.Baz will be translated to foo_bar_baz which 
+                // is the unique name for a template
                 var name = ParserHelpers.SanitizeClassName(view.FullName.Replace(namespacePrefix, "")).ToLowerInvariant();
                 _viewsRegistry.Add(name, view);
             }
@@ -107,6 +110,7 @@ namespace Templates
 
         private string ConvertPathToName(string templatePath)
         {
+            // this will translate path like ~/Foo/Bar/Baz.cshtml to foo_bar_baz which is the key we used to save view type in cache
             templatePath = templatePath
                 .Replace("~/", "")
                 .Replace("/", ".")
