@@ -1,5 +1,6 @@
 ﻿using System;
 using Templates;
+using Templates.Models;
 using Templates.Views.Welcome;
 
 namespace RazorEngineGeneratorSample
